@@ -1,0 +1,72 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "opsquery"
+version = "0.1.0"
+description = "Safe, measured, retrieval-augmented text-to-SQL over operational data"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+  "sqlglot>=25.24,<27",
+  "psycopg[binary]>=3.2,<4",
+  "pydantic>=2.7,<3",
+  "PyYAML>=6.0,<7",
+  "opentelemetry-api>=1.25,<2",
+  "opentelemetry-sdk>=1.25,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.2,<9",
+  "pytest-cov>=5,<7",
+  "ruff>=0.6,<1",
+  "mypy>=1.11,<2",
+  "types-PyYAML>=6.0",
+]
+
+[project.scripts]
+opsquery = "opsquery.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/opsquery"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unreachable = true
+files = ["src/opsquery"]
+
+[[tool.mypy.overrides]]
+module = ["sqlglot.*", "yaml.*", "psycopg.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = ["db: requires the docker compose database"]
+
+[tool.coverage.run]
+source = ["src/opsquery"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "@overload",
+]

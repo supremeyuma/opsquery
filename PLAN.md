@@ -316,7 +316,7 @@ Coverage target: 85% on `src/opsquery`, 100% on `src/opsquery/sql/guard.py`.
 
 ## 9. Done checklist
 
-- [ ] M0 scaffold + compose + CI
+- [x] M0 scaffold + compose + CI
 - [ ] M1 schema, read-only role, deterministic seed, introspection
 - [ ] M2 guard + executor with 40-case adversarial suite
 - [ ] M3 golden eval set + offline harness + CI accuracy floor
