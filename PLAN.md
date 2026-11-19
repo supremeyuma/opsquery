@@ -1,6 +1,6 @@
 # PLAN — OpsQuery (retrieval + text-to-SQL agent)
 
-Status: **M5 complete** · M6 pending acceptance · Target: 6 milestones / ~3 weeks
+Status: **M6 complete** · Target: 6 milestones / ~3 weeks
 
 The contract for the coding agent. One milestone at a time; done means the **acceptance commands**
 pass from a clean clone. Update checkboxes in the same commit.
@@ -322,4 +322,4 @@ Coverage target: 85% on `src/opsquery`, 100% on `src/opsquery/sql/guard.py`.
 - [x] M3 golden eval set + offline harness + CI accuracy floor
 - [x] M4 retrieval, citations, injection resistance
 - [x] M5 agent loop, refusal, PII, tracing
-- [ ] M6 threat model, case study, v1.0.0, CV block
+- [x] M6 threat model, case study, v1.0.0, CV block
