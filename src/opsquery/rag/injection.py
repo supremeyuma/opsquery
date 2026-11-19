@@ -11,7 +11,7 @@ import re
 from dataclasses import dataclass, field
 
 from opsquery.llm.prompts import rag_prompt
-from opsquery.rag.index import RetrievedChunk
+from opsquery.rag.index import RetrievedChunk, load_documents
 
 INJECTION_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("ignore-instructions", re.compile(r"ignore (all )?(previous|prior|above) instructions", re.I)),
@@ -41,16 +41,30 @@ def is_poisoned(text: str) -> bool:
 
 
 def build_context(question: str, chunks: list[RetrievedChunk]) -> ContextBundle:
-    """Delimit clean chunks as untrusted data and quarantine instruction-like text."""
+    """Delimit clean chunks as untrusted data and quarantine poisoned documents.
+
+    Quarantine is document-level: if any chunk of a document contains an
+    instruction, every chunk of that document is excluded. A partly poisoned
+    document is not trustworthy.
+    """
+
+    doc_labels: dict[str, set[str]] = {}
+    known_poisoned = {doc_id for doc_id, text in load_documents() if scan(text)}
+    for chunk in chunks:
+        if chunk.doc_id in known_poisoned:
+            doc_labels.setdefault(chunk.doc_id, set()).add("poisoned-document")
+            continue
+        labels = scan(chunk.content)
+        if labels:
+            doc_labels.setdefault(chunk.doc_id, set()).update(labels)
 
     allowed: list[RetrievedChunk] = []
     quarantined: list[str] = []
     matched: dict[str, tuple[str, ...]] = {}
     for chunk in chunks:
-        labels = scan(chunk.content)
-        if labels:
+        if chunk.doc_id in doc_labels:
             quarantined.append(chunk.chunk_id)
-            matched[chunk.chunk_id] = tuple(labels)
+            matched[chunk.chunk_id] = tuple(sorted(doc_labels[chunk.doc_id]))
         else:
             allowed.append(chunk)
     prompt = rag_prompt(question, [(chunk.chunk_id, chunk.content) for chunk in allowed])

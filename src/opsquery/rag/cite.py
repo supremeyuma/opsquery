@@ -91,12 +91,20 @@ def evaluate_groundedness(
 
 
 def _first_sentence(text: str) -> str:
-    sentence = SENTENCE.split(text.strip())[0].strip()
-    return sentence
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        return SENTENCE.split(stripped)[0].strip()
+    return ""
 
 
 def answer_from_chunks(
-    question: str, chunks: list[RetrievedChunk], max_claims: int = 3
+    question: str,
+    chunks: list[RetrievedChunk],
+    max_claims: int = 3,
+    *,
+    top_document_only: bool = False,
 ) -> GroundedAnswer:
     """Build a deterministic extractive answer with one citation per claim."""
 
@@ -104,9 +112,13 @@ def answer_from_chunks(
         return GroundedAnswer(
             text="I could not find supporting documentation for that question.", citations=()
         )
+    top_doc = chunks[0].doc_id
+    relevant = (
+        [chunk for chunk in chunks if chunk.doc_id == top_doc] if top_document_only else chunks
+    )
     claims: list[str] = []
     citations: list[str] = []
-    for chunk in chunks[:max_claims]:
+    for chunk in relevant[:max_claims]:
         sentence = _first_sentence(chunk.content)
         if not sentence:
             continue

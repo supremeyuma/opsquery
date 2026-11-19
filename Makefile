@@ -29,7 +29,7 @@ introspect-check:
 	$(CONTAINER_PY) opsquery.db.introspect --check
 
 test:
-	$(UV) run pytest --cov=opsquery --cov-report=term-missing
+	$(UV) run pytest --cov=opsquery --cov-report=term-missing --cov-fail-under=85
 	$(UV) run coverage report --include="*/opsquery/sql/guard.py" --fail-under=100
 
 lint:
