@@ -51,7 +51,7 @@ report:
 record:
 	$(CONTAINER_PY) opsquery.llm.record
 
-ci: db-up lint types test
+ci: db-up lint types test eval-gate
 
 demo:
 	$(CONTAINER_PY) opsquery.demo

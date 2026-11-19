@@ -1,0 +1,5 @@
+{
+  "execution_accuracy": 1.0,
+  "adversarial_refusal_rate": 1.0,
+  "max_false_executions": 0
+}

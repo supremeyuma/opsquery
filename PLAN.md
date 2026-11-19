@@ -319,7 +319,7 @@ Coverage target: 85% on `src/opsquery`, 100% on `src/opsquery/sql/guard.py`.
 - [x] M0 scaffold + compose + CI
 - [x] M1 schema, read-only role, deterministic seed, introspection
 - [x] M2 guard + executor with 40-case adversarial suite
-- [ ] M3 golden eval set + offline harness + CI accuracy floor
+- [x] M3 golden eval set + offline harness + CI accuracy floor
 - [ ] M4 retrieval, citations, injection resistance
 - [ ] M5 agent loop, refusal, PII, tracing
 - [ ] M6 threat model, case study, v1.0.0, CV block
