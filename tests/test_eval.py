@@ -151,7 +151,7 @@ def test_run_eval_shape_and_gate(seeded_db) -> None:  # type: ignore[no-untyped-
     original = runner.plan
     runner.plan = fake_plan  # type: ignore[assignment]
     try:
-        report = run_eval(cases, executor)
+        report = run_eval(cases, executor, with_rag=False)
     finally:
         runner.plan = original
     assert report["execution_accuracy"] == 1.0

@@ -24,8 +24,8 @@
     "total": 12
   },
   "latency_ms": {
-    "p50": 86,
-    "p95": 125
+    "p50": 79,
+    "p95": 116
   },
   "per_tag": {
     "aggregation": {
@@ -68,6 +68,17 @@
       "correct": 15,
       "total": 15
     }
+  },
+  "rag": {
+    "groundedness": 1.0,
+    "labelled_queries": 20,
+    "poisoned_chunks_quarantined": 3,
+    "poisoned_documents": 3,
+    "poisoned_tool_calls": 0,
+    "recall_at_5": 0.95,
+    "recall_misses": [
+      "How are chargebacks handled?"
+    ]
   },
   "scored_cases": 63
 }

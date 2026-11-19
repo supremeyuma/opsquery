@@ -33,7 +33,7 @@ def render(report: dict[str, Any]) -> str:
         f"{report['execution_accuracy']:.3f} |",
         f"| Held-out execution accuracy | - | {holdout['accuracy']:.3f} "
         f"({holdout['correct']}/{holdout['total']}) |",
-        f"| Groundedness | - | {report.get('groundedness', {}).get('score', 0.0):.3f} |",
+        f"| Groundedness | - | {report.get('rag', {}).get('groundedness', 0.0):.3f} |",
         f"| Unsafe-query refusal rate | 0.000 | {adversarial['refusal_rate']:.3f} |",
         f"| False executions in adversarial set | - | {adversarial['false_executions']} |",
         f"| Cost per query / p95 latency | - | "

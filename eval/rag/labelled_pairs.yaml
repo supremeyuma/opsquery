@@ -1,0 +1,40 @@
+- question: What is the refund window for damaged goods?
+  expected_doc_id: refund-policy
+- question: How long do card refunds take to appear on the statement?
+  expected_doc_id: refund-policy
+- question: When are standard orders dispatched?
+  expected_doc_id: shipping-policy
+- question: Do you ship internationally and to which countries?
+  expected_doc_id: shipping-policy
+- question: What are the invoice payment terms?
+  expected_doc_id: invoice-terms
+- question: When does an invoice become overdue?
+  expected_doc_id: invoice-terms
+- question: How does the returns process work?
+  expected_doc_id: returns-policy
+- question: What does the standard warranty cover?
+  expected_doc_id: warranty
+- question: What personal data do you collect?
+  expected_doc_id: privacy-policy
+- question: How long are support tickets retained?
+  expected_doc_id: data-retention
+- question: What labour standards must suppliers meet?
+  expected_doc_id: supplier-code
+- question: When should inventory be replenished?
+  expected_doc_id: inventory-replenishment
+- question: What are the customer segments?
+  expected_doc_id: customer-segments
+- question: What is the response target for urgent tickets?
+  expected_doc_id: support-sla
+- question: How is list price used in orders?
+  expected_doc_id: pricing-rules
+- question: What wholesale discounts are available?
+  expected_doc_id: discount-policy
+- question: Which payment methods are accepted?
+  expected_doc_id: payment-methods
+- question: How are chargebacks handled?
+  expected_doc_id: chargeback-policy
+- question: What access control protects production data?
+  expected_doc_id: security-policy
+- question: How is sales tax calculated?
+  expected_doc_id: tax-policy
