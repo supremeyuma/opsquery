@@ -6,7 +6,7 @@ from opsquery.config import Settings
 
 
 def test_version_string() -> None:
-    assert __version__ == "0.1.0"
+    assert __version__ == "1.0.0"
 
 
 def test_settings_defaults(monkeypatch) -> None:  # type: ignore[no-untyped-def]
@@ -33,7 +33,7 @@ def test_settings_from_env(monkeypatch) -> None:  # type: ignore[no-untyped-def]
 
 def test_cli_version(capsys) -> None:  # type: ignore[no-untyped-def]
     assert main(["--version"]) == 0
-    assert capsys.readouterr().out.strip() == "0.1.0"
+    assert capsys.readouterr().out.strip() == "1.0.0"
 
 
 def test_cli_help(capsys) -> None:  # type: ignore[no-untyped-def]

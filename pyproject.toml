@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "opsquery"
-version = "0.1.0"
+version = "1.0.0"
 description = "Safe, measured, retrieval-augmented text-to-SQL over operational data"
 readme = "README.md"
 requires-python = ">=3.10"
