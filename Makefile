@@ -30,6 +30,7 @@ introspect-check:
 
 test:
 	$(UV) run pytest --cov=opsquery --cov-report=term-missing
+	$(UV) run coverage report --include="*/opsquery/sql/guard.py" --fail-under=100
 
 lint:
 	$(UV) run ruff check .
