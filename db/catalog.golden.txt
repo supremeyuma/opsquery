@@ -1,0 +1,81 @@
+OpsQuery catalog v1
+table customers rows=5000
+  id bigint [pk not null] samples: 1 | 2 | 3
+  name text [not null] samples: Dara Alvarez | Rosa Chen | Hana Quinn
+  email text [not null] samples: dara.alvarez.1@example.com | rosa.chen.2@example.com | hana.quinn.3@example.com
+  phone text samples: +1-555-859-5506 | +1-555-704-7912 | +1-555-716-1434
+  segment text [not null] samples: retail | retail | vip
+  city text [not null] samples: Boston | Denver | Miami
+  country text [not null] samples: US | US | US
+  created_at timestamp with time zone [not null] samples: 2022-09-08T08:07:36+00:00 | 2022-02-02T01:05:05+00:00 | 2023-07-29T07:14:22+00:00
+table inventory rows=600
+  id bigint [pk not null] samples: 1 | 2 | 3
+  product_id bigint [not null] samples: 1 | 1 | 2
+  warehouse text [not null] samples: east | west | east
+  quantity_on_hand integer [not null] samples: 250 | 363 | 388
+  reorder_point integer [not null] samples: 59 | 58 | 47
+  updated_at timestamp with time zone [not null] samples: 2025-12-22T00:00:00+00:00 | 2025-10-16T00:00:00+00:00 | 2025-10-22T00:00:00+00:00
+  fk product_id -> products.id
+table invoices rows=46001
+  id bigint [pk not null] samples: 1 | 2 | 3
+  order_id bigint [not null] samples: 1 | 2 | 3
+  invoice_number text [not null] samples: INV-2025-000001 | INV-2025-000002 | INV-2024-000003
+  issued_at date [not null] samples: 2025-12-31 | 2025-12-31 | 2024-01-01
+  due_at date [not null] samples: 2026-01-30 | 2026-01-30 | 2024-01-31
+  status text [not null] samples: paid | paid | overdue
+  amount numeric(12,2) [not null] samples: 623.03 | 863.75 | 400.15
+  paid_at date samples: 2026-01-13 | 2026-01-21 | 2024-06-04
+  fk order_id -> orders.id
+table order_items rows=111194
+  id bigint [pk not null] samples: 1 | 2 | 3
+  order_id bigint [not null] samples: 1 | 1 | 2
+  product_id bigint [not null] samples: 70 | 77 | 256
+  quantity integer [not null] samples: 1 | 1 | 1
+  unit_price numeric(12,2) [not null] samples: 231.17 | 435.4 | 427.96
+  discount_pct numeric(5,2) [not null] samples: 0 | 0.1 | 0
+  line_total numeric(12,2) [not null] samples: 231.17 | 391.86 | 427.96
+  fk order_id -> orders.id
+  fk product_id -> products.id
+table orders rows=50000
+  id bigint [pk not null] samples: 1 | 2 | 3
+  order_number text [not null] samples: ORD-2025-000001 | ORD-2024-000002 | ORD-2025-000003
+  customer_id bigint [not null] samples: 2061 | 4360 | 131
+  status text [not null] samples: paid | shipped | delivered
+  channel text [not null] samples: store | partner | phone
+  ordered_at timestamp with time zone [not null] samples: 2025-12-31T23:45:00+00:00 | 2025-12-31T23:59:00+00:00 | 2024-01-01T00:05:00+00:00
+  shipped_at timestamp with time zone samples: 2024-10-14T07:19:00+00:00 | 2024-04-22T17:30:00+00:00 | 2024-05-12T08:08:00+00:00
+  currency character(3) [not null] samples: USD | USD | USD
+  total_amount numeric(12,2) [not null] samples: 623.03 | 863.75 | 400.15
+  fk customer_id -> customers.id
+table payments rows=40438
+  id bigint [pk not null] samples: 1 | 2 | 3
+  invoice_id bigint [not null] samples: 1 | 2 | 4
+  paid_at timestamp with time zone [not null] samples: 2026-01-13T00:00:00+00:00 | 2026-01-21T00:00:00+00:00 | 2024-06-04T00:00:00+00:00
+  amount numeric(12,2) [not null] samples: 623.03 | 863.75 | 119.56
+  method text [not null] samples: card | credit | bank
+  reference text [not null] samples: PAY-0000001 | PAY-0000002 | PAY-0000003
+  fk invoice_id -> invoices.id
+table products rows=300
+  id bigint [pk not null] samples: 1 | 2 | 3
+  sku text [not null] samples: SKU-0001 | SKU-0002 | SKU-0003
+  name text [not null] samples: Accessories item 1 | Electronics item 2 | Accessories item 3
+  category text [not null] samples: Accessories | Electronics | Accessories
+  unit_price numeric(12,2) [not null] samples: 365.33 | 132.54 | 382
+  active boolean [not null] samples: true | true | true
+  created_at timestamp with time zone [not null] samples: 2023-10-09T00:00:00+00:00 | 2023-07-18T00:00:00+00:00 | 2024-03-20T00:00:00+00:00
+table suppliers rows=40
+  id bigint [pk not null] samples: 1 | 2 | 3
+  name text [not null] samples: Supplier 01 | Supplier 02 | Supplier 03
+  country text [not null] samples: US | DE | MX
+  lead_time_days integer [not null] samples: 59 | 39 | 59
+  rating numeric(3,2) [not null] samples: 2.48 | 3.27 | 4.45
+table support_tickets rows=3000
+  id bigint [pk not null] samples: 1 | 2 | 3
+  customer_id bigint [not null] samples: 3938 | 2270 | 2052
+  opened_at timestamp with time zone [not null] samples: 2024-08-19T00:18:00+00:00 | 2024-05-25T10:27:00+00:00 | 2024-03-12T03:52:00+00:00
+  closed_at timestamp with time zone samples: 2024-06-02T08:27:00+00:00 | 2024-10-11T17:27:00+00:00 | 2024-05-31T20:43:00+00:00
+  category text [not null] samples: returns | delivery | delivery
+  priority text [not null] samples: low | urgent | low
+  subject text [not null] samples: Ticket 1 | Ticket 2 | Ticket 3
+  satisfaction smallint samples: 3 | 5 | 5
+  fk customer_id -> customers.id
