@@ -50,7 +50,7 @@ report:
 record:
 	$(CONTAINER_PY) opsquery.llm.record
 
-ci: lint types test
+ci: db-up lint types test
 
 demo:
 	$(CONTAINER_PY) opsquery.demo
