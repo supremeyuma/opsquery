@@ -39,10 +39,10 @@ lint:
 types:
 	$(UV) run mypy
 
-eval:
+eval: seed
 	$(CONTAINER_PY) opsquery.eval.runner --write-report
 
-eval-gate:
+eval-gate: seed
 	$(CONTAINER_PY) opsquery.eval.runner --gate
 
 report:

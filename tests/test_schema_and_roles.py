@@ -16,6 +16,7 @@ EXPECTED_TABLES = {
     "invoices",
     "payments",
     "support_tickets",
+    "doc_chunks",
 }
 
 
