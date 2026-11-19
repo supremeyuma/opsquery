@@ -24,8 +24,8 @@
     "total": 12
   },
   "latency_ms": {
-    "p50": 79,
-    "p95": 116
+    "p50": 91,
+    "p95": 132
   },
   "per_tag": {
     "aggregation": {
@@ -72,7 +72,7 @@
   "rag": {
     "groundedness": 1.0,
     "labelled_queries": 20,
-    "poisoned_chunks_quarantined": 3,
+    "poisoned_chunks_quarantined": 12,
     "poisoned_documents": 3,
     "poisoned_tool_calls": 0,
     "recall_at_5": 0.95,
