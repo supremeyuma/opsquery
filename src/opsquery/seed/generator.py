@@ -473,10 +473,14 @@ def main() -> int:
     checksum = dataset_checksum(data)
     with psycopg.connect(settings().database_url) as conn:
         load(conn, data)
+        from opsquery.rag.index import ingest as ingest_docs
+
+        chunks = ingest_docs(conn)
     total = sum(counts.values())
     print(f"seed: {total} rows across {len(counts)} tables (seed={SEED})")
     print("seed: " + " ".join(f"{k}={v}" for k, v in counts.items()))
     print(f"seed: checksum={checksum}")
+    print(f"seed: indexed {chunks} document chunks")
     return 0
 
 

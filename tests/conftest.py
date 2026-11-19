@@ -57,6 +57,9 @@ def test_db(admin_url: str) -> Iterator[TestDatabase]:
 def seeded_db(test_db: TestDatabase) -> TestDatabase:
     with psycopg.connect(test_db.admin_url) as conn:
         load(conn, build_dataset())
+        from opsquery.rag.index import ingest as ingest_docs
+
+        ingest_docs(conn)
     return test_db
 
 
