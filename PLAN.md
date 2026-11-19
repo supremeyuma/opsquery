@@ -1,6 +1,6 @@
 # PLAN — OpsQuery (retrieval + text-to-SQL agent)
 
-Status: **M0** · Target: 6 milestones / ~3 weeks
+Status: **M5 complete** · M6 pending acceptance · Target: 6 milestones / ~3 weeks
 
 The contract for the coding agent. One milestone at a time; done means the **acceptance commands**
 pass from a clean clone. Update checkboxes in the same commit.
