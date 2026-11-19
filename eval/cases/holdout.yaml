@@ -1,0 +1,85 @@
+- id: ho_count_suppliers
+  question: How many suppliers do we have?
+  expected_sql: SELECT count(*) FROM suppliers
+  tags:
+  - aggregation
+  split: holdout
+- id: ho_suppliers_by_country
+  question: How many suppliers are in each country?
+  expected_sql: SELECT country, count(*) FROM suppliers GROUP BY country ORDER BY country
+  tags:
+  - group
+  split: holdout
+- id: ho_aov_dec_2025
+  question: What was the average order value in December 2025?
+  expected_sql: SELECT avg(total_amount) FROM orders WHERE ordered_at >= '2025-12-01' AND ordered_at < '2026-01-01'
+  tags:
+  - aggregation
+  - date
+  split: holdout
+- id: ho_top_products_5_2024
+  question: Top 5 products by revenue in 2024
+  expected_sql: SELECT p.name, sum(oi.line_total) AS revenue FROM order_items oi JOIN products p ON p.id = oi.product_id JOIN orders o ON o.id
+    = oi.order_id WHERE ordered_at >= '2024-01-01' AND ordered_at < '2025-01-01' GROUP BY p.id, p.name ORDER BY revenue DESC, p.name LIMIT 5
+  tags:
+  - join
+  - topn
+  - date
+  split: holdout
+- id: ho_orders_by_status_2025
+  question: How many orders are there by status in 2025?
+  expected_sql: SELECT status, count(*) FROM orders WHERE ordered_at >= '2025-01-01' AND ordered_at < '2026-01-01' GROUP BY status ORDER BY status
+  tags:
+  - group
+  - date
+  split: holdout
+- id: ho_count_pending
+  question: How many pending orders are there?
+  expected_sql: SELECT count(*) FROM orders WHERE status = 'pending'
+  tags:
+  - filter
+  split: holdout
+- id: ho_avg_satisfaction_2025
+  question: What is the average ticket satisfaction overall?
+  expected_sql: SELECT avg(satisfaction) FROM support_tickets WHERE satisfaction IS NOT NULL
+  tags:
+  - aggregation
+  - 'null'
+  split: holdout
+- id: ho_revenue_2024_again
+  question: What was total revenue for 2024?
+  expected_sql: SELECT sum(amount) FROM payments WHERE paid_at >= '2024-01-01' AND paid_at < '2025-01-01'
+  tags:
+  - aggregation
+  - date
+  split: holdout
+- id: ho_inventory_list
+  question: Show inventory below reorder point
+  expected_sql: SELECT p.name AS product, i.warehouse, i.quantity_on_hand, i.reorder_point FROM inventory i JOIN products p ON p.id = i.product_id
+    WHERE i.quantity_on_hand < i.reorder_point ORDER BY i.quantity_on_hand - i.reorder_point, p.name, i.warehouse LIMIT 20
+  tags:
+  - join
+  - filter
+  split: holdout
+- id: ho_monthly_orders_2024
+  question: How many orders were placed each month in 2024?
+  expected_sql: SELECT date_trunc('month', ordered_at AT TIME ZONE 'UTC')::date AS month, count(*) FROM orders WHERE ordered_at >= '2024-01-01'
+    AND ordered_at < '2025-01-01' GROUP BY 1 ORDER BY 1
+  tags:
+  - group
+  - date
+  split: holdout
+- id: ho_distinct_names_again
+  question: How many different customer names are there?
+  expected_sql: SELECT count(DISTINCT name) FROM customers
+  tags:
+  - aggregation
+  - trap
+  split: holdout
+- id: ho_orders_on_2024_01_01
+  question: How many orders were placed on 2024-01-01 UTC?
+  expected_sql: SELECT count(*) FROM orders WHERE ordered_at >= '2024-01-01' AND ordered_at < '2024-01-02'
+  tags:
+  - date
+  - trap
+  split: holdout

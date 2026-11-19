@@ -1,0 +1,303 @@
+- id: count_customers
+  question: How many customers are there?
+  expected_sql: SELECT count(*) FROM customers
+  tags:
+  - aggregation
+- id: count_orders
+  question: How many orders were placed?
+  expected_sql: SELECT count(*) FROM orders
+  tags:
+  - aggregation
+- id: count_active_products
+  question: How many products are active?
+  expected_sql: SELECT count(*) FROM products WHERE active
+  tags:
+  - aggregation
+  - filter
+- id: count_cancelled_orders
+  question: How many orders were cancelled?
+  expected_sql: SELECT count(*) FROM orders WHERE status = 'cancelled'
+  tags:
+  - filter
+- id: count_vip_customers
+  question: How many VIP customers are there?
+  expected_sql: SELECT count(*) FROM customers WHERE segment = 'vip'
+  tags:
+  - filter
+- id: null_phone_customers
+  question: How many customers are missing a phone number?
+  expected_sql: SELECT count(*) FROM customers WHERE phone IS NULL
+  tags:
+  - 'null'
+  - trap
+- id: distinct_customer_names
+  question: How many distinct customer names are there?
+  expected_sql: SELECT count(DISTINCT name) FROM customers
+  tags:
+  - aggregation
+  - trap
+- id: duplicate_customer_names
+  question: Which customer names appear more than once?
+  expected_sql: SELECT name, count(*) AS n FROM customers GROUP BY name HAVING count(*) > 1 ORDER BY name
+  tags:
+  - group
+  - trap
+- id: customers_without_orders
+  question: How many customers have never placed an order?
+  expected_sql: SELECT count(*) FROM customers c WHERE NOT EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id)
+  tags:
+  - 'null'
+  - trap
+- id: products_never_ordered
+  question: How many products have never been ordered?
+  expected_sql: SELECT count(*) FROM products p WHERE NOT EXISTS (SELECT 1 FROM order_items oi WHERE oi.product_id = p.id)
+  tags:
+  - 'null'
+  - trap
+- id: inventory_below_reorder
+  question: How many inventory rows are below their reorder point?
+  expected_sql: SELECT count(*) FROM inventory WHERE quantity_on_hand < reorder_point
+  tags:
+  - filter
+- id: inventory_below_reorder_list
+  question: List inventory below the reorder point
+  expected_sql: SELECT p.name AS product, i.warehouse, i.quantity_on_hand, i.reorder_point FROM inventory i JOIN products p ON p.id = i.product_id
+    WHERE i.quantity_on_hand < i.reorder_point ORDER BY i.quantity_on_hand - i.reorder_point, p.name, i.warehouse LIMIT 20
+  tags:
+  - join
+  - filter
+- id: refund_count
+  question: How many refunds were issued?
+  expected_sql: SELECT count(*) FROM payments WHERE amount < 0
+  tags:
+  - filter
+  - trap
+- id: refund_total
+  question: What is the total value of refunds?
+  expected_sql: SELECT sum(amount) FROM payments WHERE amount < 0
+  tags:
+  - aggregation
+  - trap
+- id: overdue_invoices
+  question: How many invoices are overdue?
+  expected_sql: SELECT count(*) FROM invoices WHERE status = 'overdue'
+  tags:
+  - filter
+- id: avg_satisfaction
+  question: What is the average ticket satisfaction?
+  expected_sql: SELECT avg(satisfaction) FROM support_tickets WHERE satisfaction IS NOT NULL
+  tags:
+  - aggregation
+  - 'null'
+- id: open_tickets
+  question: How many support tickets are still open?
+  expected_sql: SELECT count(*) FROM support_tickets WHERE closed_at IS NULL
+  tags:
+  - 'null'
+- id: supplier_lead_time
+  question: What is the average supplier lead time?
+  expected_sql: SELECT avg(lead_time_days), max(lead_time_days) FROM suppliers
+  tags:
+  - aggregation
+- id: supplier_longest_lead
+  question: Which supplier has the longest lead time?
+  expected_sql: SELECT name, lead_time_days FROM suppliers ORDER BY lead_time_days DESC, name LIMIT 1
+  tags:
+  - topn
+- id: revenue_2025
+  question: What was total revenue in 2025?
+  expected_sql: SELECT sum(amount) FROM payments WHERE paid_at >= '2025-01-01' AND paid_at < '2026-01-01'
+  tags:
+  - aggregation
+  - date
+- id: revenue_dec_2025
+  question: What was net revenue in December 2025?
+  expected_sql: SELECT sum(amount) FROM payments WHERE paid_at >= '2025-12-01' AND paid_at < '2026-01-01'
+  tags:
+  - aggregation
+  - date
+- id: revenue_2024
+  question: What was revenue in 2024?
+  expected_sql: SELECT sum(amount) FROM payments WHERE paid_at >= '2024-01-01' AND paid_at < '2025-01-01'
+  tags:
+  - aggregation
+  - date
+- id: gross_revenue_2024
+  question: What was gross revenue in 2024 (positive payments only)?
+  expected_sql: SELECT sum(amount) FROM payments WHERE paid_at >= '2024-01-01' AND paid_at < '2025-01-01' AND amount > 0
+  tags:
+  - aggregation
+  - date
+  - trap
+- id: order_value_2024
+  question: What was the total order value in 2024?
+  expected_sql: SELECT sum(total_amount) FROM orders WHERE ordered_at >= '2024-01-01' AND ordered_at < '2025-01-01'
+  tags:
+  - aggregation
+  - date
+- id: aov_2025
+  question: What was the average order value in 2025?
+  expected_sql: SELECT avg(total_amount) FROM orders WHERE ordered_at >= '2025-01-01' AND ordered_at < '2026-01-01'
+  tags:
+  - aggregation
+  - date
+- id: monthly_revenue_2025
+  question: Show monthly revenue for 2025
+  expected_sql: SELECT date_trunc('month', paid_at AT TIME ZONE 'UTC')::date AS month, sum(amount) FROM payments WHERE paid_at >= '2025-01-01'
+    AND paid_at < '2026-01-01' GROUP BY 1 ORDER BY 1
+  tags:
+  - aggregation
+  - date
+  - group
+- id: top_products_5
+  question: Top 5 products by revenue
+  expected_sql: SELECT p.name, sum(oi.line_total) AS revenue FROM order_items oi JOIN products p ON p.id = oi.product_id JOIN orders o ON o.id
+    = oi.order_id GROUP BY p.id, p.name ORDER BY revenue DESC, p.name LIMIT 5
+  tags:
+  - join
+  - topn
+- id: top_products_3_2025
+  question: Top 3 products by revenue in 2025
+  expected_sql: SELECT p.name, sum(oi.line_total) AS revenue FROM order_items oi JOIN products p ON p.id = oi.product_id JOIN orders o ON o.id
+    = oi.order_id WHERE ordered_at >= '2025-01-01' AND ordered_at < '2026-01-01' GROUP BY p.id, p.name ORDER BY revenue DESC, p.name LIMIT 3
+  tags:
+  - join
+  - topn
+  - date
+- id: top_customers_5
+  question: Top 5 customers by revenue
+  expected_sql: SELECT c.name, sum(p.amount) AS revenue FROM customers c JOIN orders o ON o.customer_id = c.id JOIN invoices i ON i.order_id =
+    o.id JOIN payments p ON p.invoice_id = i.id GROUP BY c.id, c.name ORDER BY revenue DESC, c.name LIMIT 5
+  tags:
+  - join
+  - topn
+- id: top_customers_3_2025
+  question: Top 3 customers by revenue in 2025
+  expected_sql: SELECT c.name, sum(p.amount) AS revenue FROM customers c JOIN orders o ON o.customer_id = c.id JOIN invoices i ON i.order_id =
+    o.id JOIN payments p ON p.invoice_id = i.id WHERE p.paid_at >= '2025-01-01' AND p.paid_at < '2026-01-01' GROUP BY c.id, c.name ORDER BY revenue
+    DESC, c.name LIMIT 3
+  tags:
+  - join
+  - topn
+  - date
+- id: payments_by_method
+  question: Break down payments by method
+  expected_sql: SELECT method, count(*), sum(amount) FROM payments GROUP BY method ORDER BY method
+  tags:
+  - group
+- id: orders_by_status
+  question: How many orders are there by status?
+  expected_sql: SELECT status, count(*) FROM orders GROUP BY status ORDER BY status
+  tags:
+  - group
+- id: orders_by_channel
+  question: Break down orders by channel
+  expected_sql: SELECT channel, count(*) FROM orders GROUP BY channel ORDER BY channel
+  tags:
+  - group
+- id: customers_by_segment
+  question: How many customers are in each segment?
+  expected_sql: SELECT segment, count(*) FROM customers GROUP BY segment ORDER BY segment
+  tags:
+  - group
+- id: products_by_category
+  question: How many products are in each category?
+  expected_sql: SELECT category, count(*) FROM products GROUP BY category ORDER BY category
+  tags:
+  - group
+- id: tickets_by_priority
+  question: Break down support tickets by priority
+  expected_sql: SELECT priority, count(*) FROM support_tickets GROUP BY priority ORDER BY priority
+  tags:
+  - group
+- id: orders_by_month_2025
+  question: How many orders were placed each month in 2025?
+  expected_sql: SELECT date_trunc('month', ordered_at AT TIME ZONE 'UTC')::date AS month, count(*) FROM orders WHERE ordered_at >= '2025-01-01'
+    AND ordered_at < '2026-01-01' GROUP BY 1 ORDER BY 1
+  tags:
+  - group
+  - date
+- id: orders_on_2025_12_31
+  question: How many orders were placed on 2025-12-31 UTC?
+  expected_sql: SELECT count(*) FROM orders WHERE ordered_at >= '2025-12-31' AND ordered_at < '2026-01-01'
+  tags:
+  - date
+  - trap
+- id: distinct_ordering_customers
+  question: How many distinct customers placed an order?
+  expected_sql: SELECT count(DISTINCT customer_id) FROM orders
+  tags:
+  - aggregation
+  - trap
+- id: orders_per_segment
+  question: How many orders were placed per customer segment?
+  expected_sql: SELECT c.segment, count(*) FROM orders o JOIN customers c ON c.id = o.customer_id GROUP BY c.segment ORDER BY c.segment
+  tags:
+  - join
+  - group
+- id: revenue_by_segment
+  question: What was revenue by customer segment?
+  expected_sql: SELECT c.segment, sum(p.amount) FROM customers c JOIN orders o ON o.customer_id = c.id JOIN invoices i ON i.order_id = o.id JOIN
+    payments p ON p.invoice_id = i.id GROUP BY c.segment ORDER BY c.segment
+  tags:
+  - join
+  - group
+  - trap
+- id: total_inventory
+  question: What is the total quantity on hand across inventory?
+  expected_sql: SELECT sum(quantity_on_hand) FROM inventory
+  tags:
+  - aggregation
+- id: avg_order_value_2024
+  question: What was the average order value in 2024?
+  expected_sql: SELECT avg(total_amount) FROM orders WHERE ordered_at >= '2024-01-01' AND ordered_at < '2025-01-01'
+  tags:
+  - aggregation
+  - date
+- id: count_shipped
+  question: How many orders have shipped?
+  expected_sql: SELECT count(*) FROM orders WHERE status = 'shipped'
+  tags:
+  - filter
+- id: count_delivered
+  question: How many orders were delivered?
+  expected_sql: SELECT count(*) FROM orders WHERE status = 'delivered'
+  tags:
+  - filter
+- id: count_returned
+  question: How many orders were returned?
+  expected_sql: SELECT count(*) FROM orders WHERE status = 'returned'
+  tags:
+  - filter
+  - trap
+- id: refunds_2025
+  question: How many refunds were issued in 2025?
+  expected_sql: SELECT count(*) FROM payments WHERE paid_at >= '2025-01-01' AND paid_at < '2026-01-01' AND amount < 0
+  tags:
+  - filter
+  - date
+  - trap
+- id: satisfaction_by_priority
+  question: What is the average satisfaction by ticket priority?
+  expected_sql: SELECT priority, avg(satisfaction) FROM support_tickets WHERE satisfaction IS NOT NULL GROUP BY priority ORDER BY priority
+  tags:
+  - group
+  - 'null'
+- id: best_selling_product
+  question: What is the best-selling product by revenue?
+  expected_sql: SELECT p.name, sum(oi.line_total) AS revenue FROM order_items oi JOIN products p ON p.id = oi.product_id JOIN orders o ON o.id
+    = oi.order_id GROUP BY p.id, p.name ORDER BY revenue DESC, p.name LIMIT 1
+  tags:
+  - join
+  - topn
+- id: revenue_dec_2024
+  question: What was revenue in December 2024?
+  expected_sql: SELECT sum(amount) FROM payments WHERE paid_at >= '2024-12-01' AND paid_at < '2025-01-01'
+  tags:
+  - aggregation
+  - date
+- id: count_pending_orders
+  question: How many orders are still pending?
+  expected_sql: SELECT count(*) FROM orders WHERE status = 'pending'
+  tags:
+  - filter
