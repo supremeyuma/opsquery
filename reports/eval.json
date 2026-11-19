@@ -1,0 +1,73 @@
+{
+  "adversarial": {
+    "false_executions": 0,
+    "refusal_rate": 1.0,
+    "refused": 15,
+    "total": 15
+  },
+  "baseline": {
+    "accuracy": 0.0635,
+    "correct": 4
+  },
+  "cases": 78,
+  "correct": 63,
+  "cost": {
+    "note": "deterministic offline planner; no LLM calls during eval",
+    "tokens": 0,
+    "usd": 0.0
+  },
+  "execution_accuracy": 1.0,
+  "failures": [],
+  "holdout": {
+    "accuracy": 1.0,
+    "correct": 12,
+    "total": 12
+  },
+  "latency_ms": {
+    "p50": 86,
+    "p95": 125
+  },
+  "per_tag": {
+    "aggregation": {
+      "accuracy": 1.0,
+      "correct": 23,
+      "total": 23
+    },
+    "date": {
+      "accuracy": 1.0,
+      "correct": 20,
+      "total": 20
+    },
+    "filter": {
+      "accuracy": 1.0,
+      "correct": 14,
+      "total": 14
+    },
+    "group": {
+      "accuracy": 1.0,
+      "correct": 15,
+      "total": 15
+    },
+    "join": {
+      "accuracy": 1.0,
+      "correct": 10,
+      "total": 10
+    },
+    "null": {
+      "accuracy": 1.0,
+      "correct": 7,
+      "total": 7
+    },
+    "topn": {
+      "accuracy": 1.0,
+      "correct": 7,
+      "total": 7
+    },
+    "trap": {
+      "accuracy": 1.0,
+      "correct": 15,
+      "total": 15
+    }
+  },
+  "scored_cases": 63
+}
